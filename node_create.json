@@ -1,0 +1,919 @@
+[
+    {
+        "id": "28281aa914fccdd0",
+        "type": "tab",
+        "label": "可_3",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "1b8a294ad23e9278",
+        "type": "switch",
+        "z": "28281aa914fccdd0",
+        "name": "Route Control",
+        "property": "topic",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "login_success",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "login_failed",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 360,
+        "y": 2500,
+        "wires": [
+            [],
+            []
+        ]
+    },
+    {
+        "id": "fad2129c4da79438",
+        "type": "switch",
+        "z": "28281aa914fccdd0",
+        "name": "Check Result",
+        "property": "payload.length",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "gt",
+                "v": "0",
+                "vt": "num"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 150,
+        "y": 2540,
+        "wires": [
+            [],
+            []
+        ]
+    },
+    {
+        "id": "47b8d578e09d2e7f",
+        "type": "debug",
+        "z": "28281aa914fccdd0",
+        "name": "Debug Show Main",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 710,
+        "y": 2640,
+        "wires": []
+    },
+    {
+        "id": "235cec260e84efba",
+        "type": "function",
+        "z": "28281aa914fccdd0",
+        "name": "Auth Check",
+        "func": "if (!global.get('isAuthenticated')) {\n    msg.payload = { ui_control: { tab: 'login_tab', sidebar: false } };\n    return [msg, null];\n}\nmsg.payload = { ui_control: { sidebar: true } };\nreturn [null, msg];",
+        "outputs": 2,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 150,
+        "y": 2460,
+        "wires": [
+            [],
+            []
+        ]
+    },
+    {
+        "id": "1e83f84ae24e3d21",
+        "type": "function",
+        "z": "28281aa914fccdd0",
+        "name": "Show Main Page",
+        "func": "msg.payload = {\n    ui_control: {\n        tab: \"f3761a1d83f27988\",\n        sidebar: true,\n        tabs: {\n            \"f3761a1d83f27988\": { hidden: false }  // Unhide the main tab\n        }\n    }\n};\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 370,
+        "y": 2580,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ed51bc1aa2c266a6",
+        "type": "function",
+        "z": "28281aa914fccdd0",
+        "name": "Format Symptom Data",
+        "func": "if (msg.payload.length > 0) {\n    // 將每筆記錄轉換為一個陣列，包含 [main_symptom, duration, severity, associated_symptoms, recorded_at]\n    msg.payload = msg.payload.map(data => [\n        data.main_symptom || \"No record\",\n        data.duration || \"No record\",\n        data.severity || \"No record\",\n        data.associated_symptoms || \"No record\",\n        data.recorded_at || \"No record\"\n    ]);\n} else {\n    // 如果沒有記錄，返回一個空陣列\n    msg.payload = [];\n}\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 140,
+        "y": 2260,
+        "wires": [
+            [
+                "c9a850a7efe889f1",
+                "d0fa6d27f8d4e55a",
+                "c5e36325cb2c5768",
+                "31eae173aa1d9f6f",
+                "d4e70136eea108b5"
+            ]
+        ]
+    },
+    {
+        "id": "c9a850a7efe889f1",
+        "type": "ui_text",
+        "z": "28281aa914fccdd0",
+        "group": "0561c5f6449fc2fc",
+        "order": 2,
+        "width": 8,
+        "height": 3,
+        "name": "",
+        "label": "Symptoms",
+        "format": "{{msg.payload[0][0]}}",
+        "layout": "row-left",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": 16,
+        "color": "#000000",
+        "x": 570,
+        "y": 2260,
+        "wires": []
+    },
+    {
+        "id": "d0fa6d27f8d4e55a",
+        "type": "ui_text",
+        "z": "28281aa914fccdd0",
+        "group": "group1",
+        "order": 3,
+        "width": 8,
+        "height": 3,
+        "name": "",
+        "label": "Duration",
+        "format": "{{msg.payload[0][1]}}",
+        "layout": "row-left",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": 16,
+        "color": "#000000",
+        "x": 560,
+        "y": 2300,
+        "wires": []
+    },
+    {
+        "id": "c5e36325cb2c5768",
+        "type": "ui_text",
+        "z": "28281aa914fccdd0",
+        "group": "group1",
+        "order": 4,
+        "width": 8,
+        "height": 3,
+        "name": "",
+        "label": "Associated Symptoms",
+        "format": "{{msg.payload[0][3]}}",
+        "layout": "row-left",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": 16,
+        "color": "#000000",
+        "x": 600,
+        "y": 2380,
+        "wires": []
+    },
+    {
+        "id": "31eae173aa1d9f6f",
+        "type": "ui_text",
+        "z": "28281aa914fccdd0",
+        "group": "group1",
+        "order": 5,
+        "width": 8,
+        "height": 3,
+        "name": "",
+        "label": "Recorded Time",
+        "format": "{{msg.payload[0][4]}}",
+        "layout": "row-left",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": 16,
+        "color": "#000000",
+        "x": 580,
+        "y": 2420,
+        "wires": []
+    },
+    {
+        "id": "d4e70136eea108b5",
+        "type": "function",
+        "z": "28281aa914fccdd0",
+        "name": "function 52",
+        "func": "// 檢查 msg.payload 是否有資料\nif (msg.payload && msg.payload.length > 0 && msg.payload[0] && msg.payload[0][2]) {\n    // 提取 severity，例如 \"Difficulty breathing 5/10\"\n    var severity = msg.payload[0][2];\n\n    // 使用空格分割，提取數值部分（\"5/10\"）\n    var parts = severity.split(' ');\n    var valuePart = parts[parts.length - 1]; // 取最後一個元素，例如 \"5/10\"\n\n    // 從 \"5/10\" 中提取分子（5）\n    var value = parseInt(valuePart.split('/')[0], 10);\n\n    // 將提取的數值存入 msg.payload\n    msg.payload = value;\n} else {\n    // 如果沒有資料，設為 0 或其他預設值\n    msg.payload = 0;\n}\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 490,
+        "y": 2340,
+        "wires": [
+            [
+                "severity_gauge"
+            ]
+        ]
+    },
+    {
+        "id": "severity_gauge",
+        "type": "ui_gauge",
+        "z": "28281aa914fccdd0",
+        "name": "Severity Gauge",
+        "group": "0561c5f6449fc2fc",
+        "order": 1,
+        "width": 6,
+        "height": 3,
+        "gtype": "wave",
+        "title": "Difficulty breathing /10",
+        "label": "",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "10",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "3",
+        "seg2": "7",
+        "diff": false,
+        "className": "",
+        "x": 760,
+        "y": 2340,
+        "wires": []
+    },
+    {
+        "id": "2b4fdd25f87b3c68",
+        "type": "ui_template",
+        "z": "28281aa914fccdd0",
+        "group": "login_group",
+        "name": "Login Page",
+        "order": 1,
+        "width": "5",
+        "height": "6",
+        "format": "<!DOCTYPE html>\n<html lang=\"zh-TW\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Login</title>\n    <style>\n        .login-container {\n            font-family: Arial, sans-serif;\n            background-color: #f4f4f9;\n            display: flex;\n            justify-content: center;\n            align-items: center;\n            min-height: 100vh;\n            margin: 0;\n            position: fixed;\n            top: 0;\n            left: 0;\n            width: 100%;\n            height: 100%;\n        }\n        .login-box {\n            background: #ffffff;\n            padding: 2rem;\n            border-radius: 10px;\n            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);\n            max-width: 400px;\n            width: 100%;\n        }\n        h2 {\n            text-align: center;\n            color: #9966CC;\n            margin-bottom: 1.5rem;\n        }\n        label {\n            display: block;\n            margin: 0.5rem 0 0.2rem;\n            color: #555555;\n        }\n        input {\n            width: 95%;\n            padding: 0.8rem;\n            margin-bottom: 1rem;\n            border: 2px solid #e0e6ed;\n            border-radius: 5px;\n            font-size: 1rem;\n        }\n        button {\n            width: 100%;\n            padding: 0.8rem;\n            background-color: #9966CC;\n            color: white;\n            border: none;\n            border-radius: 5px;\n            font-size: 1rem;\n            cursor: pointer;\n        }\n        button:hover {\n            background-color: #8855BB;\n        }\n        /* hide the slide bar */\n        .nr-dashboard-theme .nr-dashboard-template {\n            padding: 0 !important;\n        }\n        .nr-dashboard-theme md-sidenav {\n            display: none !important;\n        }\n    </style>\n</head>\n<body>\n    <div class=\"login-container\">\n        <div class=\"login-box\">\n            <h2>Login</h2>\n            <div>\n                <label for=\"id\">Health Care ID：</label>\n                <input type=\"text\" id=\"id\" placeholder=\"Enter your ID\" required>\n                <label for=\"password\">Passward：</label>\n                <input type=\"password\" id=\"password\" placeholder=\"Enter your password\" required>\n                <button id=\"loginBtn\">enter</button>\n            </div>\n        </div>\n    </div>\n\n    <script>\n        (function(scope) {\n            document.getElementById('loginBtn').addEventListener('click', function(e) {\n                e.preventDefault();\n                const id = document.getElementById('id').value;\n                const password = document.getElementById('password').value;\n                if (!id || !password) {\n                    alert('Please enter id and password');\n                    return;\n                }\n                scope.send({\n                    topic: 'login',\n                    payload: { username: id, password: password }\n                });\n            });\n        })(scope);\n    </script>\n</body>\n</html>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": false,
+        "templateScope": "local",
+        "className": "",
+        "x": 210,
+        "y": 800,
+        "wires": [
+            [
+                "3f87163ac5c6cfc2"
+            ]
+        ]
+    },
+    {
+        "id": "3f87163ac5c6cfc2",
+        "type": "function",
+        "z": "28281aa914fccdd0",
+        "name": "Prepare Login Query",
+        "func": "// msg.topic = 'SELECT * FROM hc_people WHERE HC_ID = ? AND password = ?';\n// msg.payload = [msg.payload.username, msg.payload.password];\n// return msg;\n\nlet id = msg.payload.username;\nlet password = msg.payload.password;\n\nif (!id || !password) {\n    msg.payload = { success: false, message: \"Enter your id and password\" };\n    msg.topic = \"error\";\n    return [null, msg];\n}\n\nmsg.topic = `SELECT * FROM hc_people WHERE HC_ID = '${id}' AND password = '${password}'`;\nreturn [msg, null];",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 430,
+        "y": 800,
+        "wires": [
+            [
+                "737d5beb17a3c18a"
+            ]
+        ]
+    },
+    {
+        "id": "737d5beb17a3c18a",
+        "type": "mysql",
+        "z": "28281aa914fccdd0",
+        "mydb": "34888df8fda43860",
+        "name": "segmentation",
+        "x": 660,
+        "y": 800,
+        "wires": [
+            [
+                "3a9b39e60ce8abf1"
+            ]
+        ]
+    },
+    {
+        "id": "3a9b39e60ce8abf1",
+        "type": "function",
+        "z": "28281aa914fccdd0",
+        "name": "Check Login",
+        "func": "if (msg.payload.length > 0) {\n    // success and transfer to main page\n    msg.payload = \"Pneumothorax Segmentation System\";\n    msg.topic = 'login_success';\n} else {\n    // login failed, show the exception message\n    msg.payload = { message: 'id or password is wrong' };\n    msg.topic = 'login_failed';\n}\nreturn msg;\n\n// node.warn(msg.payload[0]);\n// return msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 890,
+        "y": 800,
+        "wires": [
+            [
+                "5b813c09ba2b8284"
+            ]
+        ]
+    },
+    {
+        "id": "fadd0946cea17700",
+        "type": "ui_toast",
+        "z": "28281aa914fccdd0",
+        "position": "dialog",
+        "displayTime": "3",
+        "highlight": "",
+        "sendall": true,
+        "outputs": 1,
+        "ok": "again",
+        "cancel": "",
+        "raw": false,
+        "className": "",
+        "topic": "",
+        "name": "Login Error",
+        "x": 1390,
+        "y": 840,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "5b813c09ba2b8284",
+        "type": "switch",
+        "z": "28281aa914fccdd0",
+        "name": "Check Result",
+        "property": "topic",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "login_success",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "login_failed",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 1110,
+        "y": 800,
+        "wires": [
+            [
+                "6a5d7affbfa613f0"
+            ],
+            [
+                "fadd0946cea17700"
+            ]
+        ]
+    },
+    {
+        "id": "6a5d7affbfa613f0",
+        "type": "ui_ui_control",
+        "z": "28281aa914fccdd0",
+        "name": "",
+        "events": "all",
+        "x": 1380,
+        "y": 760,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "6274f4a6572614cf",
+        "type": "ui_template",
+        "z": "28281aa914fccdd0",
+        "group": "af21775ce76bc0c5",
+        "name": "Patient Info Input",
+        "order": 1,
+        "width": 8,
+        "height": 8,
+        "format": "<!DOCTYPE html>\n<html>\n<style>\n    /* .patient-info-container {\n        background: linear-gradient(135deg, #ffffff, #f9fbfc);\n        padding: 25px;\n        border-radius: 15px;\n        box-shadow: 0 8px 20px rgba(0,0,0,0.05);\n        max-width: 350px;\n        margin: 20px auto;\n    } */\n    .patient-info-container {\n    background: linear-gradient(135deg, #ffffff, #f9fbfc);\n    padding: 25px;\n    border-radius: 15px;\n    box-shadow: 0 8px 20px rgba(0,0,0,0.05);\n    max-width: 350px;\n    margin: 10px auto 0; /* Changed to 0 bottom margin */\n    }\n    .patient-info-title {\n        color: #1e2a44;\n        font-family: 'Segoe UI', sans-serif;\n        font-weight: 600;\n        margin-bottom: 20px;\n        text-align: center;\n    }\n    .patient-form {\n        display: flex;\n        flex-direction: column;\n        gap: 15px;\n    }\n    .patient-form label {\n        color: #1e2a44;\n        font-family: 'Segoe UI', sans-serif;\n        font-size: 14px;\n        margin-bottom: 5px;\n    }\n    .patient-form input, .patient-form select {\n        padding: 10px;\n        border: 2px solid #e0e6ed;\n        border-radius: 8px;\n        font-size: 14px;\n        color: #1e2a44;\n        background: #fff;\n    }\n    .patient-form button {\n        background: #9966CC;\n        color: white;\n        border: none;\n        padding: 12px 20px;\n        border-radius: 8px;\n        cursor: pointer;\n        font-weight: 500;\n        text-transform: uppercase;\n        letter-spacing: 0.5px;\n        margin-top: 10px;\n    }\n</style>\n<div class=\"patient-info-container\">\n    <h3 class=\"patient-info-title\">Patient's Information</h3>\n    <div class=\"patient-form\">\n        <label>Id:\n            <input type=\"text\" id=\"patientid\" placeholder=\"Enter patient id\">\n        </label>\n        <label>Name:\n            <input type=\"text\" id=\"patientName\" placeholder=\"Enter name\">\n        </label>\n        <label>Age:\n            <input type=\"number\" id=\"patientAge\" placeholder=\"Enter age\" min=\"0\">\n        </label>\n        <label>Gender:\n            <select id=\"patientGender\">\n                <option value=\"\">Select gender</option>\n                <option value=\"Male\">Male</option>\n                <option value=\"Female\">Female</option>\n                <option value=\"Other\">Other</option>\n            </select>\n        </label>\n        <!-- <label>Medical ID:\n            <input type=\"text\" id=\"patientID\" placeholder=\"Enter medical ID\">\n        </label> -->\n        <button id=\"saveBtn\">Select</button>\n    </div>\n</div>\n\n<script type=\"text/javascript\">\n    (function(scope) {\n        const saveBtn = document.getElementById('saveBtn');\n\n        saveBtn.addEventListener('click', function() {\n            const patientData = {\n                id: document.getElementById('patientid').value,\n                name: document.getElementById('patientName').value,\n                age: document.getElementById('patientAge').value,\n                gender: document.getElementById('patientGender').value,\n                // medicalID: document.getElementById('patientID').value\n            };\n            // || !patientData.medicalID\n            if (!patientData.id || !patientData.name || !patientData.age || !patientData.gender) {\n                alert('Please fill in all fields!');\n                return;\n            }\n\n            scope.send({\n                topic: 'save_patient',\n                payload: patientData\n            });\n            alert('Patient data selected!');\n        });\n    })(scope);\n</script>\n</html>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": false,
+        "templateScope": "local",
+        "className": "",
+        "x": 210,
+        "y": 1020,
+        "wires": [
+            [
+                "d2ccb2d475d0108d",
+                "bc83a40e290b1673"
+            ]
+        ]
+    },
+    {
+        "id": "d2ccb2d475d0108d",
+        "type": "function",
+        "z": "28281aa914fccdd0",
+        "name": "Prepare DB Payload",
+        "func": "// get user's input from msg.payload\nvar patientData = msg.payload;\nvar id = patientData.id;\nvar name = patientData.name;\nvar age = patientData.age;\nvar gender = patientData.gender;\n// var medical_id = patientData.medicalID;\n\n// check columns is not null\nif (!id || !name || !age || !gender) {\n    msg.payload = { success: false, message: \"Please Enter all columns\" };\n    msg.topic = \"error\";\n    return [null, msg];\n}\n\n// msg.topic = `select blood_pressure, blood_sugar, heart_rate from patients where id==${id}`;\nmsg.topic = `SELECT blood_pressure, blood_sugar, heart_rate FROM patients WHERE id = '${id}'`;\n\nmsg.payload = [];\n\nreturn [msg, null];",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 500,
+        "y": 940,
+        "wires": [
+            [
+                "bedf6baf2a5d9bc3"
+            ]
+        ]
+    },
+    {
+        "id": "bedf6baf2a5d9bc3",
+        "type": "mysql",
+        "z": "28281aa914fccdd0",
+        "mydb": "34888df8fda43860",
+        "name": "segmentation",
+        "x": 740,
+        "y": 940,
+        "wires": [
+            [
+                "3955c42b86af807b"
+            ]
+        ]
+    },
+    {
+        "id": "4d12b5a607600518",
+        "type": "ui_gauge",
+        "z": "28281aa914fccdd0",
+        "name": "",
+        "group": "89426acd3212fb16",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Blood Sugar",
+        "label": "mg/dL",
+        "format": "{{msg.blood_sugar}}",
+        "min": "70",
+        "max": "130",
+        "colors": [
+            "#9966CC",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "99",
+        "seg2": "125",
+        "diff": false,
+        "className": "",
+        "x": 1370,
+        "y": 1060,
+        "wires": []
+    },
+    {
+        "id": "242df6ce0a23fa49",
+        "type": "ui_gauge",
+        "z": "28281aa914fccdd0",
+        "name": "",
+        "group": "89426acd3212fb16",
+        "order": 4,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Heart Rate",
+        "label": "bpm",
+        "format": "{{msg.heart_rate}}",
+        "min": "60",
+        "max": "140",
+        "colors": [
+            "#9966CC",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "100",
+        "seg2": "120",
+        "diff": false,
+        "className": "",
+        "x": 1370,
+        "y": 1120,
+        "wires": []
+    },
+    {
+        "id": "7623cb3ad7cd873f",
+        "type": "ui_gauge",
+        "z": "28281aa914fccdd0",
+        "name": "",
+        "group": "89426acd3212fb16",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Blood Pressure Diastolic",
+        "label": "mmHg",
+        "format": "{{msg.diastolic}}",
+        "min": "60",
+        "max": "120",
+        "colors": [
+            "#9966CC",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "80",
+        "seg2": "90",
+        "diff": false,
+        "className": "",
+        "x": 1410,
+        "y": 1000,
+        "wires": []
+    },
+    {
+        "id": "e833ba342132425a",
+        "type": "ui_gauge",
+        "z": "28281aa914fccdd0",
+        "name": "",
+        "group": "89426acd3212fb16",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Blood Pressure Systolic",
+        "label": "mmHg",
+        "format": "{{msg.systolic}}",
+        "min": "100",
+        "max": "180",
+        "colors": [
+            "#9966CC",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "120",
+        "seg2": "140",
+        "diff": false,
+        "className": "",
+        "x": 1410,
+        "y": 940,
+        "wires": []
+    },
+    {
+        "id": "3955c42b86af807b",
+        "type": "function",
+        "z": "28281aa914fccdd0",
+        "name": "Systolic and Diastolic split",
+        "func": "let bp = msg.payload[0].blood_pressure;\nlet parts = bp.split('/');\nmsg.systolic = parseInt(parts[0]);   // 收縮壓\nmsg.diastolic = parseInt(parts[1]);  // 舒張壓\nmsg.blood_sugar = msg.payload[0].blood_sugar;\nmsg.heart_rate = msg.payload[0].heart_rate;\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 970,
+        "y": 940,
+        "wires": [
+            [
+                "e833ba342132425a",
+                "4d12b5a607600518",
+                "242df6ce0a23fa49",
+                "7623cb3ad7cd873f"
+            ]
+        ]
+    },
+    {
+        "id": "bc83a40e290b1673",
+        "type": "function",
+        "z": "28281aa914fccdd0",
+        "name": "Patients Symptons Selected and Input SQL",
+        "func": "var patientData = msg.payload;\nvar id = patientData.id;\nvar name = patientData.name;\nvar age = patientData.age;\nvar gender = patientData.gender;\n\nif (!id) {\n    msg.payload = { success: false, message: \"Enter patient's ID\" };\n    msg.topic = \"error\";\n    return [null, msg];\n}\n\nmsg.topic = `\n    SELECT \n        main_symptom, \n        duration, \n        severity, \n        associated_symptoms, \n        recorded_at\n    FROM \n        symptoms\n    WHERE \n        patient_id = '${id}'\n    ORDER BY \n        recorded_at DESC\n    LIMIT 1\n`;\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 550,
+        "y": 1100,
+        "wires": [
+            [
+                "ca2b3af002a753d8"
+            ]
+        ]
+    },
+    {
+        "id": "ca2b3af002a753d8",
+        "type": "mysql",
+        "z": "28281aa914fccdd0",
+        "mydb": "34888df8fda43860",
+        "name": "segmentation",
+        "x": 780,
+        "y": 1200,
+        "wires": [
+            [
+                "931567fe72783331"
+            ]
+        ]
+    },
+    {
+        "id": "c0d8313e4d46376d",
+        "type": "ui_template",
+        "z": "28281aa914fccdd0",
+        "group": "352995b43b9a694a",
+        "name": "Symptoms Display",
+        "order": 1,
+        "width": 8,
+        "height": 7,
+        "format": "<div\n    \n    \n    <div style=\"display: grid; grid-template-columns: 2fr 1fr; gap: 15px;\">\n        <!-- Main Symptom - Now with more space (2fr vs 1fr) -->\n        <div style=\"background: #ffffff; padding: 15px; border-radius: 10px; border-left: 4px solid #9966CC;\">\n            <div style=\"font-size: 12px; color: #7f8fa6; margin-bottom: 5px;\">MAIN SYMPTOM</div>\n            <div style=\"font-size: 16px; color: #1e2a44; font-weight: 500;\">{{msg.payload.mainSymptom}}</div>\n        </div>\n\n        <!-- Duration -->\n        <div\n            style=\"background: #ffffff; padding: 15px; border-radius: 10px; border-left: 4px solid #9966CC; opacity: 0.9;\">\n            <div style=\"font-size: 12px; color: #7f8fa6; margin-bottom: 5px;\">DURATION</div>\n            <div style=\"font-size: 16px; color: #1e2a44; font-weight: 500;\">{{msg.payload.duration}}</div>\n        </div>\n\n        <!-- Severity with Visual Indicator -->\n        <div\n            style=\"background: #ffffff; padding: 15px; border-radius: 10px; border-left: 4px solid #9966CC; grid-column: span 2;\">\n            <div style=\"font-size: 12px; color: #7f8fa6; margin-bottom: 5px;\">SEVERITY</div>\n            <div style=\"display: flex; align-items: center;\">\n                <div style=\"font-size: 16px; color: #1e2a44; font-weight: 500; margin-right: 15px;\">\n                    {{msg.payload.severity}}</div>\n                <div style=\"flex-grow: 1; background: #f5f5f5; height: 12px; border-radius: 6px; overflow: hidden;\">\n                    <div ng-if=\"msg.payload.severityValue\"\n                        style=\"width: {{msg.payload.severityValue*10}}%; height: 100%; \n                                background: linear-gradient(90deg, #9966CC {{100 - msg.payload.severityValue*10}}%, #9966CC 100%);\">\n                    </div>\n                </div>\n            </div>\n        </div>\n\n        <!-- Associated Symptoms -->\n        <div\n            style=\"background: #ffffff; padding: 15px; border-radius: 10px; border-left: 4px solid #9966CC; opacity: 0.85; grid-column: span 2;\">\n            <div style=\"font-size: 12px; color: #7f8fa6; margin-bottom: 5px;\">ASSOCIATED SYMPTOMS</div>\n            <div style=\"font-size: 15px; color: #1e2a44; line-height: 1.4;\">{{msg.payload.associatedSymptoms}}</div>\n        </div>\n\n        <!-- Recorded Time -->\n        <div\n            style=\"background: #ffffff; padding: 15px; border-radius: 10px; border-left: 4px solid #9966CC; opacity: 0.8; grid-column: span 2;\">\n            <div style=\"font-size: 12px; color: #7f8fa6; margin-bottom: 5px;\">RECORDED</div>\n            <div style=\"font-size: 15px; color: #1e2a44; display: flex; align-items: center;\">\n                <span style=\"margin-right: 5px;\">\n                    <i class=\"fa fa-calendar\" style=\"color: #7f8fa6;\"></i>\n                </span>\n                {{msg.payload.recordedAt}}\n            </div>\n        </div>\n    </div>\n</div>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 1390,
+        "y": 1200,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "931567fe72783331",
+        "type": "function",
+        "z": "28281aa914fccdd0",
+        "name": "Format Symptom Data",
+        "func": "// that creates a more structured payload for a template node\n\n// Enhanced Format Symptom Data function\nif (msg.payload.length > 0) {\n    // Create a structured object instead of array\n    const symptomData = {\n        mainSymptom: msg.payload[0].main_symptom || \"No record\",\n        duration: msg.payload[0].duration || \"No record\",\n        severity: msg.payload[0].severity || \"No record\",\n        associatedSymptoms: msg.payload[0].associated_symptoms || \"No record\",\n        recordedAt: msg.payload[0].recorded_at || \"No record\",\n        // Extract severity value for the gauge\n        severityValue: extractSeverityValue(msg.payload[0].severity || \"0/10\")\n    };\n\n    msg.payload = symptomData;\n} else {\n    // Default values if no records\n    msg.payload = {\n        mainSymptom: \"No symptom records\",\n        duration: \"N/A\",\n        severity: \"N/A\",\n        associatedSymptoms: \"N/A\",\n        recordedAt: \"N/A\",\n        severityValue: 0\n    };\n}\n\n// Helper function to extract numeric severity\nfunction extractSeverityValue(severityText) {\n    const parts = severityText.split(' ');\n    const valuePart = parts[parts.length - 1]; // e.g. \"5/10\"\n\n    if (valuePart && valuePart.includes('/')) {\n        return parseInt(valuePart.split('/')[0], 10) || 0;\n    }\n    return 0;\n}\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1040,
+        "y": 1200,
+        "wires": [
+            [
+                "c0d8313e4d46376d"
+            ]
+        ]
+    },
+    {
+        "id": "c413270f30eed14e",
+        "type": "ui_template",
+        "z": "28281aa914fccdd0",
+        "group": "768a4ff0d291dd47",
+        "name": "Enhanced File Upload",
+        "order": 2,
+        "width": 12,
+        "height": 16,
+        "format": "<!DOCTYPE html>\n<html>\n<style>\n    .upload-container {\n        background: linear-gradient(135deg, #ffffff, #f9fbfc);\n        padding: 25px;\n        border-radius: 15px;\n        box-shadow: 0 8px 20px rgba(0,0,0,0.05);\n        max-width: 650px;\n        margin: 20px auto;\n    }\n    .upload-title {\n        color: #1e2a44;\n        font-family: 'Segoe UI', sans-serif;\n        font-weight: 600;\n        margin-bottom: 20px;\n        text-align: center;\n    }\n    .file-input-container {\n        display: flex;\n        gap: 15px;\n        margin-bottom: 20px;\n        align-items: center;\n    }\n    .file-name-display {\n        flex-grow: 1;\n        padding: 12px;\n        border: 2px solid #e0e6ed;\n        border-radius: 8px;\n        background: #fff;\n        color: #7f8fa6;\n        font-size: 14px;\n    }\n    .browse-btn, .upload-btn {\n        background: #9966CC;\n        color: white;\n        border: none;\n        padding: 12px 20px;\n        border-radius: 8px;\n        cursor: pointer;\n        font-weight: 500;\n        text-transform: uppercase;\n        letter-spacing: 0.5px;\n    }\n    .image-preview {\n        margin-top: 20px;\n        background: #fff;\n        padding: 15px;\n        border-radius: 12px;\n        text-align: center;\n        border: 2px dashed #e0e6ed;\n    }\n    .image-preview h4 {\n        color: #1e2a44;\n        margin-bottom: 10px;\n        font-weight: 500;\n    }\n    .image-preview img {\n        max-width: 100%;\n        max-height: 450px;\n        object-fit: contain;\n        border-radius: 8px;\n    }\n</style>\n<div class=\"upload-container\">\n    <h3 class=\"upload-title\">X-Ray Image Upload</h3>\n    <input type=\"file\" id=\"fileInput\" accept=\"image/*\" style=\"display:none;\">\n    <div class=\"file-input-container\">\n        <input type=\"text\" readonly placeholder=\"No file selected\" id=\"fileNameDisplay\" class=\"file-name-display\">\n        <button onclick=\"document.getElementById('fileInput').click()\" class=\"browse-btn\">Browse</button>\n        <button id=\"uploadBtn\" class=\"upload-btn\">Upload</button>\n    </div>\n    <div class=\"image-preview\">\n        <h4>Original Image:</h4>\n        <img id=\"originalImage\" style=\"max-width:100%\">\n    </div>\n</div>\n\n<script type=\"text/javascript\">\n    (function(scope) {\n        const fileInput = document.getElementById('fileInput');\n        const fileNameDisplay = document.getElementById('fileNameDisplay');\n        const imgPreview = document.getElementById('originalImage');\n\n        fileInput.addEventListener('change', function() {\n            fileNameDisplay.value = this.files.length \n                ? this.files[0].name \n                : 'No file selected';\n        });\n\n        window.uploadImage = function() {\n            if (!fileInput.files.length) {\n                alert('Please select a file!');\n                return;\n            }\n\n            const file = fileInput.files[0];\n            const reader = new FileReader();\n\n            reader.onload = function(event) {\n                imgPreview.src = event.target.result;\n                const uint8Array = new Uint8Array(event.target.result);\n\n                scope.send({\n                    topic: 'upload',\n                    payload: uint8Array,\n                    filename: file.name,\n                    contentType: file.type\n                });\n            };\n\n            reader.readAsArrayBuffer(file);\n\n            const previewReader = new FileReader();\n            previewReader.onload = (e) => imgPreview.src = e.target.result;\n            previewReader.readAsDataURL(file);\n        };\n\n        document.getElementById('uploadBtn').onclick = window.uploadImage;\n    })(scope);\n</script>\n</html>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": false,
+        "templateScope": "local",
+        "className": "",
+        "x": 220,
+        "y": 1300,
+        "wires": [
+            [
+                "44d1132ed1698db8"
+            ]
+        ]
+    },
+    {
+        "id": "44d1132ed1698db8",
+        "type": "function",
+        "z": "28281aa914fccdd0",
+        "name": "Prepare Multipart Form Data",
+        "func": "if (msg.topic === 'upload') {\n    if (msg.payload instanceof Uint8Array) {\n        msg.payload = Buffer.from(msg.payload);\n    }\n    msg.headers = {\n        \"Content-Type\": \"multipart/form-data\"\n    };\n    msg.payload = {\n        file: {\n            value: msg.payload,\n            options: {\n                filename: msg.filename || \"image.png\",\n                contentType: msg.contentType || \"image/png\"\n            }\n        }\n    };\n}\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 500,
+        "y": 1300,
+        "wires": [
+            [
+                "63ec632759af6407"
+            ]
+        ]
+    },
+    {
+        "id": "63ec632759af6407",
+        "type": "http request",
+        "z": "28281aa914fccdd0",
+        "name": "Send to Prediction API",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://localhost:8000/predict",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 800,
+        "y": 1300,
+        "wires": [
+            [
+                "9c1452804dedd9d1"
+            ]
+        ]
+    },
+    {
+        "id": "9c1452804dedd9d1",
+        "type": "function",
+        "z": "28281aa914fccdd0",
+        "name": "Process Segmentation Image",
+        "func": "msg.payload = msg.payload.image;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1110,
+        "y": 1300,
+        "wires": [
+            [
+                "2a07acc878d3283b"
+            ]
+        ]
+    },
+    {
+        "id": "2a07acc878d3283b",
+        "type": "ui_template",
+        "z": "28281aa914fccdd0",
+        "group": "ff6fbde79943d2f6",
+        "name": "Segmentation Result Display",
+        "order": 1,
+        "width": 12,
+        "height": 16,
+        "format": "<div style=\"background: linear-gradient(135deg, #ffffff, #f9fbfc); padding: 20px; border-radius: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.05);\">\n    <h3 style=\"color: #1e2a44; font-family: 'Segoe UI', sans-serif; font-weight: 600; margin-bottom: 20px; text-align: center;\">Segmentation Result</h3>\n    <div style=\"display: flex; justify-content: center; align-items: center; background: #fff; padding: 15px; border-radius: 12px; border: 2px solid #e0e6ed;\">\n        <img src=\"{{msg.payload}}\" style=\"max-width: 100%; max-height: 550px; object-fit: contain; border-radius: 8px;\" />\n    </div>\n</div>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 1420,
+        "y": 1300,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "dcab08cf87be4fd4",
+        "type": "ui_spacer",
+        "z": "28281aa914fccdd0",
+        "name": "spacer",
+        "group": "",
+        "order": 5,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "0561c5f6449fc2fc",
+        "type": "ui_group",
+        "name": "test",
+        "tab": "",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "group1",
+        "type": "ui_group",
+        "name": "Login",
+        "tab": "",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "login_group",
+        "type": "ui_group",
+        "name": "Login",
+        "tab": "login_tab",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "34888df8fda43860",
+        "type": "MySQLdatabase",
+        "name": "segmentation",
+        "host": "127.0.0.1",
+        "port": "3306",
+        "db": "segmentation",
+        "tz": "",
+        "charset": "UTF8"
+    },
+    {
+        "id": "af21775ce76bc0c5",
+        "type": "ui_group",
+        "name": "Patient's Basic Info",
+        "tab": "f3761a1d83f27988",
+        "order": 1,
+        "disp": true,
+        "width": 8,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "89426acd3212fb16",
+        "type": "ui_group",
+        "name": "Health Info",
+        "tab": "f3761a1d83f27988",
+        "order": 2,
+        "disp": true,
+        "width": 6,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "352995b43b9a694a",
+        "type": "ui_group",
+        "name": "Symptoms Description",
+        "tab": "f3761a1d83f27988",
+        "order": 5,
+        "disp": true,
+        "width": 8,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "768a4ff0d291dd47",
+        "type": "ui_group",
+        "name": "Original",
+        "tab": "f3761a1d83f27988",
+        "order": 3,
+        "disp": true,
+        "width": 12,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "ff6fbde79943d2f6",
+        "type": "ui_group",
+        "name": "Segmentation",
+        "tab": "f3761a1d83f27988",
+        "order": 4,
+        "disp": true,
+        "width": 12,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "login_tab",
+        "type": "ui_tab",
+        "name": "Login",
+        "icon": "dashboard",
+        "order": 1,
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "f3761a1d83f27988",
+        "type": "ui_tab",
+        "name": "Pneumothorax Segmentation System",
+        "icon": "dashboard",
+        "order": 8,
+        "disabled": false,
+        "hidden": false
+    }
+]
