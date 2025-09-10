@@ -101,7 +101,7 @@ This project demonstrates a low-code approach to build a pneumothorax segmentati
 
 ## Node-red Editor
 
-<img src="./img/node.PNG" alt="node" width="300">
+<img src="./img/node.PNG" alt="node" width="650">
 
 ---
 
@@ -109,8 +109,8 @@ This project demonstrates a low-code approach to build a pneumothorax segmentati
 
 ### login page
 
-<img src="./img/login.PNG" alt="login" width="300">
+<img src="./img/login.PNG" alt="login" width="650">
 
 ### main page
 
-<img src="./img/demo.PNG" alt="login" width="300">
+<img src="./img/demo.PNG" alt="login" width="650">
