@@ -4,7 +4,7 @@
 
 ## Overview
 This project demonstrates a low-code approach to build a pneumothorax segmentation system using **Node-RED** for orchestrating workflows, a frontend for user interaction, a database for storing patients' conditions, and a backend Python API for processing medical imaging data.
-(Patients' data is SIMULATED DATA, not true data.)
+(Patients' data is SIMULATED DATA, not real data.)
 
 ---
 
@@ -112,5 +112,6 @@ This project demonstrates a low-code approach to build a pneumothorax segmentati
 <img src="./img/login.PNG" alt="login" width="650">
 
 ### main page
+
 
 <img src="./img/demo.PNG" alt="login" width="650">
